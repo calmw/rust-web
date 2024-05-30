@@ -1,6 +1,6 @@
 use crate::{store, types};
 use std::collections::HashMap;
-use tracing::info;
+use tracing::{instrument, info};
 use warp::http::StatusCode;
 use warp::{Rejection, Reply};
 
@@ -21,12 +21,12 @@ pub async fn update_questions(
     Ok(warp::reply::with_status("Question updated", StatusCode::OK))
 }
 
+#[instrument]
 pub async fn get_questions(
     params: HashMap<String, String>,
     store: store::Store,
-    id: String,
 ) -> Result<impl Reply, Rejection> {
-    info!("{} start querying question",id);
+    info!(" start querying question");
     if params.is_empty() {
         let pagination = types::pagination::extract_pagination(params)?;
         let res: Vec<types::question::Question> =
