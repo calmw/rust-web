@@ -23,7 +23,9 @@ pub async fn update_questions(
 pub async fn get_questions(
     params: HashMap<String, String>,
     store: store::Store,
+    id: String,
 ) -> Result<impl Reply, Rejection> {
+    log::info!("{} start querying question",id);
     if params.is_empty() {
         let pagination = types::pagination::extract_pagination(params)?;
         let res: Vec<types::question::Question> =

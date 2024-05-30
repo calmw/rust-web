@@ -3,10 +3,26 @@ mod store;
 mod types;
 
 use warp::http::Method;
-use warp::Filter;
+use warp::{Filter};
+use tracing_subscriber::fmt::format::FmtSpan;
 
 #[tokio::main]
 async fn main() {
+    let log_filter = std::env::var("RUST_LOG").unwrap_or_else(|_| "practical_rust_book=info,warp=error".to_owned());
+    tracing_subscriber::fmt()
+        // Use the filter we built above to determine which traces to record.
+        .with_env_filter(log_filter)
+        // Record an event when each span closes. This can be used to time our
+        // routes' durations!
+        .with_span_events(FmtSpan::CLOSE)
+        .init();
+
+    // tracing_subscriber::fmt()
+    //     .with_env_filter(log_filter) // 使用上面的过滤器来决定记录那些追踪
+    //     .with_span_events(FmtSpan::CLOSE) // 在每个span关闭时记录event，可以用来计算路由执行时间
+    //     .init();
+
+
     let store = store::Store::new();
     let store_filter = warp::any().map(move || store.clone());
 
@@ -20,7 +36,15 @@ async fn main() {
         .and(warp::path::end())
         .and(warp::query())
         .and(store_filter.clone())
-        .and_then(routes::question::get_questions);
+        .and_then(routes::question::get_questions)
+        .with(warp::trace(|info| {
+            tracing::info_span!(
+                "get_questions request",
+                method = %info.method(),
+                path = %info.path(),
+                id = %uuid::Uuid::new_v4(),
+            )})
+        );
 
     // 以json方式提交
     let add_question = warp::post()
@@ -59,6 +83,7 @@ async fn main() {
         .or(update_question)
         .or(del_question)
         .with(cors)
+        .with(warp::trace::request)
         .recover(handle_errors::return_error);
 
     warp::serve(routes).run(([127, 0, 0, 1], 3030)).await;

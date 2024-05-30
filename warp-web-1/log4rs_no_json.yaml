@@ -1,0 +1,14 @@
+refresh_rate: 30 seconds  #在生产环境中不必重启服务器就可以更改配置
+appenders: # 设置输出
+  stdout:
+    kind: console
+  file:
+    kind: file
+    path: "log/log.log"
+    encoder:
+      pattern: "{d} - {m}{n}"
+root: # 设置日志级别和
+  level: info
+  appenders:
+    - stdout
+    - file
