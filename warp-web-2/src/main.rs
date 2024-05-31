@@ -56,7 +56,7 @@ async fn main() {
 
     let update_question = warp::put()
         .and(warp::path("questions"))
-        .and(warp::path::param::<String>()) // 添加一个字符串参数，由此过滤器将会被/questions/1234这样的路径出发
+        .and(warp::path::param::<i32>()) // 添加一个字符串参数，由此过滤器将会被/questions/1234这样的路径出发
         .and(warp::path::end())
         .and(store_filter.clone())
         .and(warp::body::json()) // 提取json正文，该正文稍后会被添加到参数中
@@ -64,7 +64,7 @@ async fn main() {
 
     let del_question = warp::delete()
         .and(warp::path("questions"))
-        .and(warp::path::param::<String>()) // 添加一个字符串参数，由此过滤器将会被/questions/1234这样的路径出发
+        .and(warp::path::param::<i32>()) // 添加一个字符串参数，由此过滤器将会被/questions/1234这样的路径出发
         .and(warp::path::end())
         .and(store_filter.clone())
         .and_then(routes::question::del_questions); // 以存储和json正文作为参数调用update_question

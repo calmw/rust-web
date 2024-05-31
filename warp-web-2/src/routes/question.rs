@@ -5,7 +5,7 @@ use warp::http::StatusCode;
 use warp::{Rejection, Reply};
 
 pub async fn update_questions(
-    id: String,
+    id: i32,
     store: store::Store,
     question: types::question::Question,
 ) -> Result<impl Reply, Rejection> {
@@ -52,7 +52,7 @@ pub async fn add_questions(
     Ok(warp::reply::with_status("Question added", StatusCode::OK))
 }
 
-pub async fn del_questions(id: String, store: store::Store) -> Result<impl Reply, Rejection> {
+pub async fn del_questions(id: i32, store: store::Store) -> Result<impl Reply, Rejection> {
     match store
         .questions
         .write()

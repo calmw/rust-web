@@ -9,6 +9,7 @@ edition = "2021"
 handle-errors = { version = "0.1.0", path = "handle-errors" } # 拆分该库，主要是为了演示
 serde = { version = "1.0.203", features = ["derive"] }
 serde_json = "1.0.117"
+sqlx = { version = "0.7.4", features = ["runtime-tokio-rustls", "migrate", "postgres"] }
 tokio = { version = "1.37.0", features = ["full"] }
 tracing = { version = "0.1.40", features = ["log"] }
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
