@@ -6,4 +6,3 @@
     - event
     - subscriber
 - 使用gdb 、lldb调试Rust应用
-- 添加数据库查询Sqlx

@@ -1,0 +1,8 @@
+[package]
+name = "handle-errors"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sqlx = "0.7.4"
+warp = "0.3.7"
